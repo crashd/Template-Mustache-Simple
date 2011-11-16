@@ -1,0 +1,41 @@
+Template::Mustache::Simple
+==========================
+
+A tiny wrapper around Template::Mustache.
+
+This module was created to scratch an itch. And it is not well tested. I would
+also prefer to see some small changes in the original module improved, rather
+than have an frivolous modules added, so I'm not planning on submitting it to
+CPAN until it is more clear whether it has long term value.
+
+GOALS
+
+
+- Simplify the interface
+- Avoid $Template-Mustache::* package vars
+- Avoid reinventing existing code where possible
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  Template::Mustache
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2011 by crashd
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.14.1 or,
+at your option, any later version of Perl 5 you may have available.
+
+
