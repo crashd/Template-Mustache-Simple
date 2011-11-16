@@ -3,6 +3,7 @@ package Template::Mustache::Simple;
 use strict; use warnings; use 5.10.0;
 use version 0.77; our $VERSION = qv("v1.00_01");
 use Cwd;
+use Carp qw/carp/;
 require Template::Mustache;
 require Exporter;
 require File::Spec;
@@ -12,11 +13,13 @@ our %EXPORT_TAGS = ( 'all' => [ qw/render render_file mk_loader/ ] );
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 our @EXPORT = qw//;
 
+
 sub new {
 	my $class = shift;
 	my $self = {
 		path => getcwd(),
 		extension => 'mustache',
+		warn_handler => \&carp,
 		@_
 	};
 	return bless $self, $class;
@@ -38,13 +41,17 @@ sub mk_loader {
 	$extension	  ||= $self->{extension};
 	return sub {
 		my ($name) = @_;
-		-f 
-		return read_file(File::Spec->catfile($path, "$name.$extension"));
+		my $fnm = File::Spec->catfile($path, "$name.$extension");
+		return read_file($fnm) if -r $fnm;
+		# TBD correct to return blank?
+		$self->{warn_handler}->("Template '$fnm' not found, returning blank");
+		return '';
 	};
 }
 
 sub render {
 	my ($self, $tmpl, $tokens, $args) = @_;
+	# partials loader
 	my $loader = $self->mk_loader(
 		$args && $args->{path}, 
 		$args && $args->{extension});
@@ -54,6 +61,7 @@ sub render {
 
 sub render_file {
 	my ($self, $name, $tokens, $args) = @_;
+	# partials loader
 	my $loader = $self->mk_loader(
 		$args && $args->{path}, 
 		$args && $args->{extension});
